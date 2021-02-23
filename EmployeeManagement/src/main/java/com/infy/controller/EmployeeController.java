@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +42,7 @@ public class EmployeeController {
         return service.findEmployeeById(empId);
     }
 
+    @Secured("ROLE_USER")
     @GetMapping("/department/{department}")
     public List<EmployeeDTO> findEmployeesByDepartment(@Pattern(regexp = "^[A-Z]{4}$", message = "{employee.department.invalid}")
                                                        @PathVariable(name = "department") String department,
@@ -52,8 +56,10 @@ public class EmployeeController {
         return service.findEmployeeByCity(city);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_PUBLIC')")
     @GetMapping
     public List<EmployeeDTO> findAll(@Valid @RequestBody PageDataDTO pageData){
+        logger.info("findAll request received: {}",pageData);
         return service.findAll(pageData.getPage(), pageData.getSize(), Sort.by(Sort.Direction.ASC,"empId"));
     }
 

@@ -29,4 +29,13 @@ public class PageDataDTO {
     public void setSort(String sort) {
         this.sort = sort;
     }
+
+    @Override
+    public String toString() {
+        return "PageDataDTO{" +
+                "page=" + page +
+                ", size=" + size +
+                ", sort='" + sort + '\'' +
+                '}';
+    }
 }

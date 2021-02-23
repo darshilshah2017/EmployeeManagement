@@ -1,0 +1,43 @@
+//Custom User & Role table
+
+CREATE TABLE users (
+  username varchar(45) NOT NULL,
+  password varchar(100) DEFAULT NULL,
+  enabled tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (username)
+)
+
+
+CREATE TABLE user_roles (
+  user_role_id int(11) NOT NULL AUTO_INCREMENT,
+  username varchar(45) NOT NULL,
+  role varchar(45) NOT NULL,
+  PRIMARY KEY (user_role_id),
+  UNIQUE KEY uni_username_role (role,username)
+);
+
+
+INSERT INTO users(username,password,enabled)VALUES ('private','secret', 1);
+INSERT INTO user_roles(USER_ROLE_ID, username, ROLE)VALUES ('1','private', 'ROLE_USER');
+
+----------------------------------------------------------------------------------------------------------
+//Spring security provided User & Authorities table
+
+create table users(
+    username varchar_ignorecase(50) not null primary key,
+    password varchar_ignorecase(500) not null,
+    enabled boolean not null
+);
+create table authorities (
+    username varchar_ignorecase(50) not null,
+    authority varchar_ignorecase(50) not null,
+    constraint fk_authorities_users foreign key(username) references users(username)
+);
+create unique index ix_auth_username on authorities (username,authority);
+
+
+INSERT INTO users(username,password,enabled)VALUES ('private','{noop}secret', 1);
+INSERT INTO AUTHORITIES (username, AUTHORITy)VALUES ('private', 'ROLE_USER');
+
+//Password encrypted using BCrypt
+INSERT INTO users(username,password,enabled)VALUES ('private','$2a$10$Bq1JW.TwW.STegNI0TOGNetOOzDtMLKqzh9cNNbcTaj2Bv2IFAe3a', 1);
